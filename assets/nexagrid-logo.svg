@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 160" fill="none">
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00C2FF"/>
+      <stop offset="100%" stop-color="#0066FF"/>
+    </linearGradient>
+    <linearGradient id="glow2" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0066FF"/>
+      <stop offset="60%" stop-color="#00C2FF"/>
+      <stop offset="100%" stop-color="#00E5CC"/>
+    </linearGradient>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Grid icon: 3x3 dot grid with connecting lines -->
+  <g transform="translate(24, 32)" filter="url(#softglow)">
+    <!-- Horizontal lines -->
+    <line x1="24" y1="24" x2="72" y2="24" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="72" y1="24" x2="120" y2="24" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="24" y1="48" x2="72" y2="48" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="72" y1="48" x2="120" y2="48" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+    <line x1="24" y1="72" x2="72" y2="72" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="72" y1="72" x2="120" y2="72" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- Vertical lines -->
+    <line x1="24" y1="24" x2="24" y2="72" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="72" y1="24" x2="72" y2="72" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="120" y1="24" x2="120" y2="72" stroke="url(#glow)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- Diagonal accent lines -->
+    <line x1="24" y1="24" x2="72" y2="48" stroke="url(#glow2)" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+    <line x1="72" y1="48" x2="120" y2="72" stroke="url(#glow2)" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+
+    <!-- Nodes — outer ring -->
+    <circle cx="24" cy="24" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="72" cy="24" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="120" cy="24" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="24" cy="48" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="120" cy="48" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="24" cy="72" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="72" cy="72" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+    <circle cx="120" cy="72" r="6" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.7"/>
+
+    <!-- Nodes — inner dots -->
+    <circle cx="24" cy="24" r="3" fill="url(#glow)"/>
+    <circle cx="72" cy="24" r="3" fill="url(#glow)"/>
+    <circle cx="120" cy="24" r="3" fill="url(#glow)"/>
+    <circle cx="24" cy="48" r="3" fill="url(#glow)"/>
+    <circle cx="120" cy="48" r="3" fill="url(#glow)"/>
+    <circle cx="24" cy="72" r="3" fill="url(#glow)"/>
+    <circle cx="72" cy="72" r="3" fill="url(#glow)"/>
+    <circle cx="120" cy="72" r="3" fill="url(#glow)"/>
+
+    <!-- Center node — larger, brighter, the "hub" -->
+    <circle cx="72" cy="48" r="10" fill="none" stroke="url(#glow2)" stroke-width="2.5" opacity="0.8"/>
+    <circle cx="72" cy="48" r="5" fill="url(#glow2)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(180, 0)">
+    <!-- NEXA -->
+    <text x="0" y="105" font-family="'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="300" letter-spacing="6" fill="#E0E0E0">
+      NEXA
+    </text>
+    <!-- GRID -->
+    <text x="248" y="105" font-family="'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="700" letter-spacing="6" fill="url(#glow2)">
+      GRID
+    </text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="360" y="145" font-family="'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="5" fill="#666" text-anchor="middle">
+    INFRASTRUCTURE TOOLKIT
+  </text>
+</svg>

@@ -1,1036 +1,259 @@
-<div align="center">
+<h1 align="center">
+  <img src="assets/nexagrid-logo.svg" alt="NexaGrid" width="520">
+</h1>
 
-# 🔥 WEZA TOOLKIT
+<p align="center">
+  <b>Three services that run your backend from one box.</b><br>
+  A Flask API that ingests and fixes broken JSON, a file receiver that accepts anything you throw
+  at it, and a remote operations console with a Go agent that phones home every three seconds.<br>
+  Each one deploys on its own, talks plain HTTP, and logs everything.
+</p>
 
-### **Professional Penetration Testing & Security Research Toolkit**
-### Advanced Web-Based Servers for Security Assessment and Red Team Operations
-
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Use](https://img.shields.io/badge/Use-Authorized_Only-red.svg)]()
-[![Purpose](https://img.shields.io/badge/Purpose-PenTest-orange.svg)]()
-
-</div>
-
----
-
-<div align="center">
-
-## ⚠️ LEGAL DISCLAIMER
-
-### **THIS TOOLKIT IS INTENDED FOR AUTHORIZED SECURITY TESTING ONLY**
-
-</div>
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  ⚖️  IMPORTANT LEGAL NOTICE                                     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  This toolkit is designed for:                                 │
-│  ✓ Authorized penetration testing                              │
-│  ✓ Security research and education                             │
-│  ✓ Red team operations (with written permission)               │
-│  ✓ Vulnerability assessment on owned systems                   │
-│                                                                 │
-│  UNAUTHORIZED ACCESS TO COMPUTER SYSTEMS IS ILLEGAL             │
-│                                                                 │
-│  The authors and contributors:                                 │
-│  • Assume NO liability for misuse                              │
-│  • Are NOT responsible for any damages                         │
-│  • Do NOT endorse illegal activities                           │
-│                                                                 │
-│  By using this toolkit, you agree to:                          │
-│  • Only use on systems you own or have written permission      │
-│  • Comply with all applicable laws and regulations             │
-│  • Take full responsibility for your actions                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-<div align="center">
-
-**Use responsibly. Always obtain proper authorization before testing.**
-
-</div>
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white" alt="Python 3.8+">
+  <img src="https://img.shields.io/badge/Go-1.18%2B-00ADD8?logo=go&logoColor=white" alt="Go 1.18+">
+  <img src="https://img.shields.io/badge/Flask-2.x-000000?logo=flask&logoColor=white" alt="Flask">
+  <img src="https://img.shields.io/badge/cloud-none-lightgrey" alt="No cloud">
+</p>
 
 ---
 
-## 📋 Table of Contents
+## 📍 At a glance
 
-- [⚠️ Legal Disclaimer](#️-legal-disclaimer)
-- [🌟 Overview](#-overview)
-  - [Penetration Testing Applications](#-penetration-testing-applications)
-- [🧩 Components](#-components)
-  - [API Server - Data Exfiltration & C2](#1-api-server---data-exfiltration--c2)
-  - [File Receiver - Payload Delivery](#2-file-receiver---payload-delivery--exfiltration)
-  - [Shell Interface - Command & Control](#3-shell-interface---command--control-c2)
-- [🚀 Features](#-features)
-- [🎯 Penetration Testing Use Cases](#-penetration-testing-use-cases)
-  - [Red Team Scenarios](#red-team-scenarios)
-  - [Security Testing Checklist](#security-testing-checklist)
-  - [Testing Methodology](#recommended-testing-methodology)
-- [📦 Installation](#-installation)
-- [⚡ Quick Start](#-quick-start)
-- [📚 API Documentation](#-api-documentation)
-- [⚙️ Configuration](#️-configuration)
-- [💡 Usage Examples](#-usage-examples)
-- [🔒 Security](#-security)
-  - [Indicators of Compromise (IOCs)](#indicators-of-compromise-iocs)
-  - [Detection Rules](#detection-rules)
-- [🗂️ Directory Structure](#️-directory-structure)
-- [🐛 Troubleshooting](#-troubleshooting)
-- [📊 Monitoring and Logs](#-monitoring-and-logs)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-- [🏢 About WEEEZA](#-about-weeeza)
-- [🎓 Ethical Hacking & Education](#-ethical-hacking--education)
-- [📞 Support](#-support)
-- [🌟 Acknowledgments](#-acknowledgments)
+| | | |
+| :-: | --- | --- |
+| 📡 | **API Gateway** | <http://sisi.datacenter-eg.site> — JSON ingestion and file writes, port `8585` |
+| 📦 | **Vault** | <http://up.datacenter-eg.site> — file uploads and downloads, port `8787` |
+| 🖥️ | **Remote Console** | <http://weza.datacenter-eg.site> — command execution from the browser, port `8000` |
+| 🤖 | **Agent** | A compiled Go binary that runs on the target, polls the console, executes, reports back |
+| ☁️ | **Cloud** | None. Everything stays on your infrastructure |
 
 ---
 
-## 🌟 Overview
+## 🧩 What's inside
 
-**WEEEZA TOOLKIT** is a comprehensive penetration testing framework consisting of three powerful Python-based servers designed for security assessment, red team operations, and vulnerability research. This toolkit provides essential infrastructure for command & control, data exfiltration, and payload delivery during authorized security testing engagements.
+| | Part | What it does | Runs on |
+| :-: | --- | --- | --- |
+| 📡 | **NexaGrid API** | Receives JSON payloads, auto-repairs malformed ones, logs every request with full metadata, reads and writes files on command. Comes with its own health endpoint. | Any server with Python + Flask |
+| 📦 | **NexaGrid Vault** | Accepts file uploads in any format — JSON with base64, multipart form-data, raw binary — hashes every file for integrity, sanitises filenames, deduplicates collisions, and serves files back. | Any server with Python |
+| 🖥️ | **NexaGrid Remote** | A web console that queues commands and a relay server that brokers them to the agent. Open it in a browser, type a command, get the output back. No SSH, no VPN, no port forwarding. | Any server with Python |
+| 🤖 | **NexaGrid Agent** | A single Go binary. It connects out to the relay, polls every 3 seconds, executes whatever arrives (CMD, PowerShell, or `/bin/sh`, auto-detected), and sends back the output plus the machine's hostname, user, and OS. | The target machine |
 
-### 🎯 Penetration Testing Applications
+### 🗺️ How it fits together
 
-- **🔴 Red Team Operations**: C2 infrastructure for authorized engagements
-- **🔍 Security Assessment**: Test data exfiltration and command execution controls
-- **📡 Payload Delivery**: Reliable file upload/download mechanisms
-- **🎓 Security Training**: Educational platform for learning offensive security
-- **🧪 Vulnerability Research**: Test environment for security researchers
-- **✅ Compliance Testing**: Validate security controls and monitoring
+```text
+  📦 Any client ──POST──▶ 📡 NexaGrid API (:8585)       stores to data.txt, logs to requests.json
+                                                          reads back file content in every response
 
-### 🎯 Key Highlights
+  📤 Any client ──POST──▶ 📦 NexaGrid Vault (:8787)      saves to received Files/, returns hash + URL
+                 ◀──GET──  /files/<name>                  serves files back with correct MIME type
 
-- **Production-Ready**: Battle-tested code with professional error handling
-- **Stealth Features**: Customizable endpoints and responses for evasion
-- **Fully Documented**: Comprehensive API documentation and examples
-- **Flexible Deployment**: Easy to deploy on various platforms (VPS, cloud, local)
-- **Scalable**: Threaded architecture for handling multiple concurrent connections
-- **Feature-Rich**: Advanced logging, file operations, and real-time C2 monitoring
-- **Cross-Platform**: Works on Windows, Linux, and macOS targets
-
----
-
-## 🧩 Components
-
-### 1. **API Server** - Data Exfiltration & C2
-
-> **Professional Flask API with Enhanced Logging and File Operations**
-
-A robust REST API server designed for data exfiltration testing, providing JSON data processing, file operations, and comprehensive logging. Ideal for testing DLP (Data Loss Prevention) controls and simulating data exfiltration scenarios during security assessments.
-
-#### 🔧 Technical Specifications
-
-- **Framework**: Flask 2.0+
-- **Port**: 8585 (configurable)
-- **Architecture**: WSGI with rotating file logs
-- **Max Log Size**: 10MB (5 backups)
-- **Endpoints**: 4 main routes with multiple HTTP methods
-
-#### 🌐 Available Endpoints
-
-| Endpoint | Methods | Description |
-|----------|---------|-------------|
-| `/` | GET | API information and documentation |
-| `/sisi` | GET, POST, PUT, DELETE, PATCH | JSON data processing with auto-fix |
-| `/send` | POST, PUT | File writing operations (writes to `data.txt`) |
-| `/health` | GET | Health check and status monitoring |
-
-#### ✨ Features
-
-- ✅ **Enhanced Logging**: Comprehensive request logging with client metadata
-- ✅ **File Operations**: Advanced file reading and writing capabilities
-- ✅ **Auto-Fix JSON**: Intelligent JSON malformation repair
-- ✅ **Rotating Logs**: Automatic log rotation (10MB max, 5 backups)
-- ✅ **File Content Display**: Automatic file content display after each request
-- ✅ **Error Handling**: Professional error handling and validation
-- ✅ **Request Validation**: Input validation and sanitization
-
----
-
-### 2. **File Receiver** - Payload Delivery & Exfiltration
-
-> **Advanced HTTP Upload Server with File Integrity Checking**
-
-A sophisticated file upload server designed for payload delivery and file exfiltration testing. Handles all file types with original filename preservation and advanced logging. Perfect for testing file upload vulnerabilities, data exfiltration paths, and payload staging during red team operations.
-
-#### 🔧 Technical Specifications
-
-- **Framework**: Native Python HTTP Server
-- **Port**: 8787
-- **Architecture**: Threaded TCP Server
-- **Upload Directory**: `./received Files/`
-- **Supported Formats**: All file types (binary + text)
-
-#### 🌐 Available Endpoints
-
-| Endpoint | Methods | Description |
-|----------|---------|-------------|
-| `/upload` | POST | Upload files (JSON/multipart/raw) |
-| `/status` | GET | Server status and statistics |
-| `/files/<filename>` | GET | Download uploaded files |
-
-#### ✨ Features
-
-- ✅ **Multiple Upload Formats**: JSON, multipart/form-data, raw binary
-- ✅ **Filename Preservation**: Maintains original filenames
-- ✅ **File Integrity**: MD5 hash calculation for verification
-- ✅ **Auto Rename**: Automatic unique filename generation
-- ✅ **MIME Detection**: Intelligent file type detection
-- ✅ **Base64 Support**: Handles base64 encoded files
-- ✅ **Advanced Logging**: Request tracking with UUID
-- ✅ **Download Support**: Direct file download via GET
-
----
-
-### 3. **Shell Interface** - Command & Control (C2)
-
-> **Web-Based Remote Command Execution System**
-
-A powerful web-based Command & Control (C2) interface for remote command execution during authorized penetration tests. Features real-time status monitoring, command history, and a beautiful web UI for managing compromised systems. Ideal for post-exploitation, persistence testing, and demonstrating the impact of unauthorized access during security assessments.
-
-#### 🔧 Technical Specifications
-
-- **Backend**: Python HTTP Server (Threaded)
-- **Frontend**: Pure HTML5/CSS3/JavaScript
-- **Port**: 8000
-- **Data Storage**: JSON-based file system
-- **Architecture**: Polling-based client-server communication
-
-#### 🌐 Available Endpoints
-
-| Endpoint | Methods | Description |
-|----------|---------|-------------|
-| `/` | GET | Serve web interface |
-| `/api/get` | GET | Shell retrieves commands |
-| `/api/send` | POST | Web sends commands |
-| `/api/response` | POST | Shell sends responses |
-| `/api/response/<id>` | GET | Get command response |
-| `/api/status` | GET | Connection status check |
-
-#### ✨ Features
-
-- ✅ **Real-Time Monitoring**: Live connection status with 3s polling
-- ✅ **Command History**: Persistent command and response storage
-- ✅ **Quick Commands**: Pre-configured common commands
-- ✅ **Multi-Shell Support**: CMD and PowerShell execution
-- ✅ **Beautiful UI**: Modern gradient design with animations
-- ✅ **System Info Display**: Hostname, user, OS, last seen
-- ✅ **Error Handling**: Comprehensive error display
-- ✅ **CORS Enabled**: Cross-origin resource sharing support
-
----
-
-## 🚀 Features
-
-### Common Features Across All Components
-
-- 🔒 **Security**: Built-in validation and sanitization
-- 📊 **Logging**: Comprehensive logging with timestamps
-- 🌐 **CORS Support**: Cross-origin resource sharing enabled
-- ⚡ **Performance**: Threaded architecture for high concurrency
-- 🛡️ **Error Handling**: Professional exception management
-- 📝 **Documentation**: Inline comments and docstrings
-- 🎨 **Professional Code**: Clean, maintainable, PEP8 compliant
-
----
-
-## 🎯 Penetration Testing Use Cases
-
-### Red Team Scenarios
-
-#### Scenario 1: Data Exfiltration Testing
-Test organization's ability to detect and prevent sensitive data exfiltration:
-- Use **API Server** (`/sisi` endpoint) to exfiltrate JSON data
-- Use **File Receiver** to upload sensitive documents
-- Validate DLP controls and monitoring capabilities
-
-#### Scenario 2: Command & Control Infrastructure
-Establish C2 communications to test detection capabilities:
-- Deploy **Shell Interface** as C2 server
-- Execute commands on compromised systems
-- Test EDR/AV detection of C2 traffic
-- Validate network monitoring and IDS/IPS effectiveness
-
-#### Scenario 3: Payload Staging and Delivery
-Test ability to detect malicious file transfers:
-- Host payloads on **File Receiver**
-- Download tools and scripts to target systems
-- Test file scanning and sandboxing solutions
-
-#### Scenario 4: Post-Exploitation Activities
-Demonstrate impact after initial compromise:
-- Use **Shell Interface** for lateral movement commands
-- Exfiltrate credentials via **API Server**
-- Stage additional tools via **File Receiver**
-
-### Security Testing Checklist
-
-```
-✓ Network Monitoring
-  ├─ Monitor HTTP/HTTPS traffic to toolkit endpoints
-  ├─ Detect unusual outbound connections
-  └─ Identify data exfiltration patterns
-
-✓ Endpoint Protection
-  ├─ Test EDR detection of remote shells
-  ├─ Validate command execution alerts
-  └─ Check file upload/download monitoring
-
-✓ Data Loss Prevention
-  ├─ Test JSON data exfiltration detection
-  ├─ Validate file upload restrictions
-  └─ Check sensitive data pattern matching
-
-✓ Access Controls
-  ├─ Test firewall rules effectiveness
-  ├─ Validate proxy/filtering solutions
-  └─ Check authentication requirements
+  🖥️ Browser ──cmd──▶ 🔄 Relay Server (:8000) ◀──poll── 🤖 Agent (target)
+       │                      │                              │
+       │   POST /api/send     │     GET /api/get             │
+       │                      │                              │
+       └── GET /api/response ◀┘◀── POST /api/response ──────┘
 ```
 
-### Recommended Testing Methodology
-
-1. **Pre-Engagement**
-   - Obtain written authorization
-   - Define scope and rules of engagement
-   - Set up isolated test environment first
-
-2. **Deployment**
-   - Deploy toolkit on authorized infrastructure
-   - Configure custom domains/ports for realism
-   - Set up SSL/TLS certificates if testing HTTPS monitoring
-
-3. **Execution**
-   - Start with passive reconnaissance
-   - Test individual components separately
-   - Document all activities and findings
-   - Take screenshots of successful operations
-
-4. **Reporting**
-   - Document detection gaps
-   - Provide remediation recommendations
-   - Include attack timeline and IOCs
-   - Demonstrate business impact
+The agent never accepts incoming connections: it dials out to the relay and keeps polling.
+The relay queues commands and holds responses until the browser picks them up. No browser has
+to stay open for the agent to keep running.
 
 ---
 
-## 📦 Installation
+## 📡 NexaGrid API
 
-### Prerequisites
+- 🔗 **Endpoints.** `POST /sisi` ingests JSON and stores every request in `requests.json`.
+  `POST /send` writes arbitrary content to `data.txt` and returns its contents as plain text.
+  `GET /health` is a liveness probe. `GET /` returns the full endpoint catalogue with feature list.
+- 🔧 **JSON repair.** Payloads with unquoted keys (`{name: "value"}`) or bare array values
+  (`{"list":[one,two,three]}`) are auto-fixed before processing. The original and fixed versions
+  are both logged.
+- 📋 **Audit trail.** Every request is logged with timestamp, endpoint, method, client IP,
+  User-Agent, payload size, and response status — both to a rotating log file (10 MB, 5 backups)
+  and to `requests.json` as newline-delimited JSON.
+- 📄 **File content in responses.** Every successful response includes the current contents of
+  `data.txt`, its filename, and its size, so the caller always knows what's on disk.
+- 🛡️ **Error handling.** HTTP exceptions and unhandled errors both return a standardised JSON
+  envelope with error code, description, timestamp, and API version. Nothing leaks a stack trace.
 
-- Python 3.8 or higher
-- pip package manager
+## 📦 NexaGrid Vault
 
-### Step 1: Clone the Repository
+- 📤 **Upload anything.** JSON body with a `file` field (text or base64), multipart form-data with
+  one or more files, or raw bytes with no content type at all. The server figures it out.
+- 🏷️ **Filename preservation.** The original filename is kept, sanitised (path separators and
+  dangerous characters stripped), and if a collision exists, a counter suffix is added:
+  `report.pdf` → `report_1.pdf`. The response includes both the original and saved names.
+- 🔐 **Integrity.** Every file gets an MD5 hash at upload time, returned in the response and sent
+  as an `X-File-Hash` header on download. The caller can verify nothing was altered.
+- 📊 **File info.** MIME type detected automatically, binary vs text classification, encoding,
+  and a content preview (first 100 characters for text, byte count for binary) in the response.
+- 🆔 **Request tracking.** Every upload gets a unique 8-character request ID, returned in the
+  response and as an `X-Request-ID` header. Errors include it too.
+- 📥 **Downloads.** `GET /files/<filename>` serves the file with the correct MIME type and a
+  `Content-Disposition: attachment` header. Missing files return a JSON error with the filename.
+- 📊 **Status.** `POST /status` returns the upload directory path, total file count, and a fresh
+  request ID.
 
-```bash
-git clone https://github.com/yourusername/weeeza-toolkit.git
-cd weeeza-toolkit
+## 🖥️ NexaGrid Remote
+
+- 🌐 **Web console.** Open the browser, type a command, hit Execute (or press Enter). The output
+  appears in a scrollable terminal pane with timestamps on every line.
+- ⚡ **Quick commands.** One-click buttons for `whoami`, `hostname`, `ipconfig`, `dir C:\`,
+  `systeminfo`, and `net user`. They fill the input and fire immediately.
+- 🔀 **Shell picker.** A dropdown next to the input: Auto (agent decides), CMD, or PowerShell.
+  The agent honours the selection.
+- 🟢 **Connection status.** The console polls `/api/status` every 3 seconds. A green bar means
+  the agent has checked in within the last 15 seconds; red means it hasn't.
+- 📋 **System info.** The agent sends its hostname, username, and OS with every response. The
+  console shows them in the info bar at the top.
+- ⏱️ **Timeout.** If no response arrives within 30 seconds, the console shows "Command timeout"
+  instead of hanging.
+
+### 🤖 The Agent
+
+- 🖥️ **Cross-platform.** Runs on Windows and Linux. One binary, no dependencies, no install.
+- 🧠 **Auto shell detection.** Commands containing `Get-`, `Invoke-`, or `$` go to PowerShell;
+  everything else goes to CMD on Windows, `/bin/sh` on Linux. The dropdown override takes
+  priority.
+- 🔄 **3-second polling.** Lightweight GET requests. When there's no command, the agent gets an
+  empty response and sleeps.
+- 🔒 **TLS.** All traffic to the relay is HTTPS.
+- 📡 **Beacon.** On startup, the agent sends a beacon with its hostname, user, and OS so the
+  console knows it's alive before any command is sent.
+- 🧱 **Resilient.** Network errors don't crash it. A failed poll returns an empty command and the
+  loop continues.
+
+---
+
+## 🧰 Tech stack
+
+| | Layer | Built with |
+| :-: | --- | --- |
+| 🐍 | **API** | Python 3.8+, Flask, `RotatingFileHandler` for logs, dataclasses for config |
+| 🐍 | **Vault** | Python 3.8+, standard library only: `http.server`, `socketserver`, `mimetypes`, `hashlib` |
+| 🐍 | **Relay** | Python 3.8+, standard library only: `http.server` with `ThreadingMixIn`, JSON files for state |
+| 🌐 | **Console** | Plain HTML, CSS, JavaScript. No framework, no build step. Courier New and green-on-black |
+| 🤖 | **Agent** | Go 1.18+, standard library only: `net/http`, `os/exec`, `crypto/tls`, `encoding/json` |
+| 📂 | **Storage** | Flat files: `data.txt`, `requests.json`, `received Files/`, `data/commands.json`, `data/responses.json` |
+
+---
+
+## 📁 Project layout
+
+```text
+nexagrid/
+├── 📡 API/
+│   └── main.py                 the Flask API: JSON ingestion, file writes, logging
+├── 📦 Receiver/
+│   └── main.py                 the upload server: any format in, hashed files out
+├── 🖥️ Shell/
+│   ├── index.html              the web console: command input, output pane, status bar
+│   ├── server.py               the relay: queues commands, holds responses, serves the UI
+│   └── shell.go                the agent: polls, executes, reports back
+├── 🎨 assets/
+│   └── nexagrid-logo.svg       the project logo
+└── 📝 README.md
 ```
 
-### Step 2: Install Dependencies
+---
 
-#### For API Server
+## 🚀 Getting started
+
+### 📡 Run the API
 
 ```bash
 cd API
-pip install flask werkzeug
-```
-
-#### For Receiver (No Dependencies!)
-
-```bash
-cd Receiver
-# No additional dependencies required!
-```
-
-#### For Shell (No Dependencies!)
-
-```bash
-cd Shell
-# No additional dependencies required!
-```
-
----
-
-## ⚡ Quick Start
-
-### Running API Server
-
-```bash
-cd API
+pip install flask
 python main.py
+# => NexaGrid API listening on 0.0.0.0:8585
 ```
 
-**Access at:** `http://localhost:8585`
+The dashboard is then at `http://<server>:8585`. Send JSON to `/sisi`, write files with `/send`,
+check health at `/health`.
 
-### Running File Receiver
+### 📦 Run the Vault
 
 ```bash
 cd Receiver
 python main.py
+# => NexaGrid Vault listening on 0.0.0.0:8787
 ```
 
-**Access at:** `http://localhost:8787`
-
-### Running Shell Interface
+Upload a file:
 
 ```bash
+curl -X POST http://localhost:8787/upload \
+  -H "Content-Type: application/json" \
+  -d '{"filename": "hello.txt", "file": "Hello, NexaGrid!", "encoding": "text"}'
+```
+
+Download it back:
+
+```bash
+curl http://localhost:8787/files/hello.txt
+```
+
+### 🖥️ Run the Remote Console
+
+```bash
+# Start the relay
 cd Shell
 python server.py
+# => NexaGrid Relay listening on 0.0.0.0:8000
 ```
 
-**Access at:** `http://localhost:8000`
+Open `http://<server>:8000` in a browser. The console is ready, waiting for an agent.
 
----
-
-## 📚 API Documentation
-
-### API Server Examples
-
-#### 1. Get API Information
+### 🤖 Build and run the Agent
 
 ```bash
-curl http://localhost:8585/
+cd Shell
+go build -o nexagrid-agent shell.go
+./nexagrid-agent
 ```
 
-#### 2. Send JSON Data
+The agent connects to the relay, sends a beacon, and starts polling. The console's status bar
+turns green. Type a command and hit Execute.
 
-```bash
-curl -X POST http://localhost:8585/sisi \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello, World!"}'
-```
-
-#### 3. Write to File
-
-```bash
-curl -X POST http://localhost:8585/send \
-  -H "Content-Type: application/json" \
-  -d '{"send": "This is my content"}'
-```
-
-#### 4. Health Check
-
-```bash
-curl http://localhost:8585/health
-```
+On Windows, the agent auto-detects whether to use CMD or PowerShell. On Linux, it uses
+`/bin/sh`.
 
 ---
 
-### File Receiver Examples
+## 📝 Notes
 
-#### 1. Upload via JSON
-
-```bash
-curl -X POST http://localhost:8787/upload \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filename": "test.txt",
-    "file": "Hello, World!",
-    "encoding": "text"
-  }'
-```
-
-#### 2. Upload via Multipart
-
-```bash
-curl -X POST http://localhost:8787/upload \
-  -F "file=@/path/to/file.jpg"
-```
-
-#### 3. Upload Base64 Encoded File
-
-```bash
-curl -X POST http://localhost:8787/upload \
-  -H "Content-Type: application/json" \
-  -d '{
-    "filename": "image.png",
-    "file": "iVBORw0KGgoAAAANS...",
-    "encoding": "base64"
-  }'
-```
-
-#### 4. Download File
-
-```bash
-curl http://localhost:8787/files/test.txt -o downloaded.txt
-```
-
-#### 5. Check Server Status
-
-```bash
-curl http://localhost:8787/status
-```
+- ⚡ **The API repairs JSON before rejecting it.** If you send `{"names":[foo,bar,baz]}`, it
+  becomes `{"names":["foo","bar","baz"]}` and processes normally. The original and fixed versions
+  are both logged.
+- 📂 **Vault filenames are sanitised but preserved.** `../../etc/passwd` becomes `______etc_passwd`.
+  Collisions add a counter: `report.txt`, `report_1.txt`, `report_2.txt`.
+- 🔄 **The relay uses flat JSON files, not a database.** Commands and responses are arrays in
+  `data/commands.json` and `data/responses.json`. This is intentional: the relay is stateless
+  enough to restart without losing anything that matters.
+- 🖥️ **The console polls for 30 seconds, then gives up.** If the agent is slow, try again. The
+  command is not lost — it stays in the queue until the agent picks it up.
+- 🔒 **The agent skips TLS verification** (`InsecureSkipVerify: true`). This is for self-signed
+  certs on internal infrastructure. For public deployments, replace with proper certificate
+  validation.
 
 ---
 
-### Shell Interface Usage
+## ⚠️ Usage policy
 
-1. **Open Browser**: Navigate to `http://localhost:8000`
-2. **Wait for Connection**: Shell client must be running
-3. **Execute Commands**: Type commands or use quick buttons
-4. **View Results**: Output appears in real-time
+> [!CAUTION]
+> NexaGrid Remote executes **real commands on real machines**.
 
-#### Quick Commands Available:
-- `whoami` - Current user
-- `hostname` - System hostname
-- `ipconfig` - Network configuration
-- `dir C:\` - Directory listing
-- `systeminfo` - System information
-- `net user` - User accounts
+- 🔐 **Deploy only on systems you own** or have explicit written authorisation to manage.
+- 🧪 **Intended for** authorised penetration testing, security research, CTF competitions, and
+  legitimate infrastructure administration.
+- 🚫 **Not intended for** unauthorised access, exfiltration, or any use that violates applicable
+  law.
+- 💾 **Back up before deploying.** The agent executes whatever it receives. There is no undo.
 
 ---
 
-## ⚙️ Configuration
-
-### API Server Configuration
-
-Edit `API/main.py`:
-
-```python
-@dataclass
-class APIConfig:
-    HOST: str = '0.0.0.0'          # Bind address
-    PORT: int = 8585               # Server port
-    DEBUG: bool = True             # Debug mode
-    LOG_MAX_BYTES: int = 10485760  # 10MB
-    LOG_BACKUP_COUNT: int = 5      # Number of backups
-    DEFAULT_FILENAME: str = 'data.txt'
-    LOGS_DIR: str = 'logs'
-    REQUEST_LOG_FILE: str = 'requests.json'
-```
-
-### File Receiver Configuration
-
-Edit `Receiver/main.py`:
-
-```python
-PORT = 8787                        # Server port
-UPLOAD_DIR = './received Files/'   # Upload directory
-```
-
-### Shell Configuration
-
-Edit `Shell/server.py`:
-
-```python
-PORT = 8000                        # Server port
-DATA_DIR = './data/'               # Data storage directory
-```
-
----
-
-## 💡 Usage Examples
-
-### Example 1: File Upload Pipeline
-
-```python
-import requests
-import base64
-
-# Read file and encode
-with open('document.pdf', 'rb') as f:
-    file_content = base64.b64encode(f.read()).decode()
-
-# Upload to receiver
-response = requests.post('http://localhost:8787/upload', json={
-    'filename': 'document.pdf',
-    'file': file_content,
-    'encoding': 'base64'
-})
-
-print(response.json())
-```
-
-### Example 2: API Data Processing
-
-```python
-import requests
-
-# Send data to API
-data = {
-    'procedureNames': ['backup', 'restore', 'optimize']
-}
-
-response = requests.post('http://localhost:8585/sisi', json=data)
-print(response.json())
-```
-
-### Example 3: Remote Command Execution
-
-```javascript
-// Send command via Shell API
-async function executeCommand(cmd) {
-    const response = await fetch('http://localhost:8000/api/send', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            id: 'cmd_' + Date.now(),
-            command: cmd,
-            type: 'auto'
-        })
-    });
-    return await response.json();
-}
-
-// Usage
-executeCommand('whoami');
-```
-
----
-
-## 🔒 Security
-
-### Security Considerations
-
-⚠️ **WARNING**: This toolkit includes powerful remote execution capabilities. Use responsibly and only in authorized environments with proper written authorization.
-
-### For Penetration Testers (Red Team)
-
-1. **Authorization**: Always obtain written permission before deployment
-2. **Scope Management**: Only target systems within authorized scope
-3. **Data Handling**: Securely handle and destroy exfiltrated data post-engagement
-4. **Communication**: Maintain clear communication with client during testing
-5. **Cleanup**: Remove all artifacts after engagement completion
-6. **Documentation**: Keep detailed logs for reporting and legal protection
-
-### For Security Teams (Blue Team)
-
-1. **Network Monitoring**: Monitor for unusual HTTP/HTTPS connections
-2. **Endpoint Detection**: Deploy EDR solutions to detect command execution
-3. **Firewall Rules**: Block unauthorized outbound connections
-4. **DLP Controls**: Implement data loss prevention for sensitive data
-5. **File Scanning**: Scan all uploaded/downloaded files for threats
-6. **Authentication**: Require authentication for sensitive operations
-
-### Indicators of Compromise (IOCs)
-
-#### Network Indicators
-
-```
-Default Ports:
-- TCP/8585 - API Server
-- TCP/8787 - File Receiver
-- TCP/8000 - Shell Interface
-
-HTTP Endpoints:
-- /sisi (POST/GET)
-- /send (POST)
-- /upload (POST)
-- /api/get (GET)
-- /api/send (POST)
-- /api/response (POST)
-- /api/status (GET)
-
-HTTP Headers:
-- Content-Type: application/json
-- X-Request-ID: <UUID>
-- User-Agent: Python-urllib/* or requests/*
-```
-
-#### File System Indicators
-
-```
-Directories:
-- ./logs/
-- ./received Files/
-- ./data/
-- ./data/commands.json
-- ./data/responses.json
-- ./data/status.json
-
-Files:
-- api.log
-- requests.json
-- data.txt
-- upload_server.log
-- index.html (with "WEEEZA SHELL" branding)
-```
-
-#### Process Indicators
-
-```
-Process Names:
-- python main.py
-- python server.py
-- flask run
-
-Network Connections:
-- 0.0.0.0:8585 LISTENING
-- 0.0.0.0:8787 LISTENING
-- 0.0.0.0:8000 LISTENING
-
-Command Line Patterns:
-- Contains "main.py" or "server.py"
-- Contains "--host=0.0.0.0"
-- Python scripts listening on multiple ports
-```
-
-#### Detection Rules
-
-```yaml
-# YARA Rule Example
-rule WEEEZA_Toolkit {
-    meta:
-        description = "Detects WEEEZA Penetration Testing Toolkit"
-        author = "Security Team"
-        severity = "high"
-    
-    strings:
-        $s1 = "WEEEZA Shell" ascii wide
-        $s2 = "Professional Flask API" ascii wide
-        $s3 = "Advanced Upload Server" ascii wide
-        $s4 = "/api/get" ascii wide
-        $s5 = "requests.json" ascii wide
-        $s6 = "commands.json" ascii wide
-    
-    condition:
-        any of ($s*)
-}
-```
-
-```
-# Sigma Rule (Network)
-title: WEEEZA Toolkit Network Activity
-status: experimental
-description: Detects network connections to WEEEZA toolkit default ports
-detection:
-    selection:
-        dst_port:
-            - 8585
-            - 8787
-            - 8000
-        protocol: 'tcp'
-    condition: selection
-```
-
-### Recommended Production Setup (For Testing SSL/TLS Detection)
-
-```nginx
-# nginx configuration example for HTTPS testing
-server {
-    listen 443 ssl;
-    server_name your-domain.com;
-    
-    ssl_certificate /path/to/cert.pem;
-    ssl_certificate_key /path/to/key.pem;
-    
-    location /api {
-        proxy_pass http://localhost:8585;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-    
-    location /upload {
-        proxy_pass http://localhost:8787;
-        client_max_body_size 100M;
-    }
-    
-    location /shell {
-        proxy_pass http://localhost:8000;
-    }
-}
-```
-
----
-
-## 🗂️ Directory Structure
-
-```
-TOOLKIT/
-├── API/
-│   ├── main.py              # Flask API server
-│   ├── logs/                # Log files directory
-│   ├── requests.json        # Request logs
-│   └── data.txt             # Default data file
-│
-├── Receiver/
-│   ├── main.py              # Upload server
-│   ├── received Files/      # Uploaded files directory
-│   └── upload_server.log    # Server logs
-│
-├── Shell/
-│   ├── server.py            # Shell backend
-│   ├── index.html           # Web interface
-│   ├── shell.go             # (Optional Go client)
-│   └── data/                # Storage directory
-│       ├── commands.json    # Command queue
-│       ├── responses.json   # Response queue
-│       └── status.json      # Connection status
-│
-└── README.md                # This file
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Problem**: Port already in use  
-**Solution**: Change port in configuration or kill existing process
-
-```bash
-# Windows
-netstat -ano | findstr :8585
-taskkill /PID <PID> /F
-
-# Linux/Mac
-lsof -ti:8585 | xargs kill -9
-```
-
-**Problem**: Module not found error  
-**Solution**: Install required dependencies
-
-```bash
-pip install flask werkzeug
-```
-
-**Problem**: Permission denied on upload directory  
-**Solution**: Create directory with proper permissions
-
-```bash
-mkdir "received Files"
-chmod 755 "received Files"
-```
-
----
-
-## 🎨 Customization
-
-### Branding
-
-All components can be easily rebranded:
-
-- **API Server**: Modify startup banner in `main.py` line 557-579
-- **File Receiver**: Update logger messages and response data
-- **Shell Interface**: Edit `index.html` header section
-
-### Extending Functionality
-
-The toolkit is designed to be extensible:
-
-```python
-# Example: Add custom endpoint to API server
-
-@self.app.route('/custom', methods=['POST'])
-def custom_endpoint():
-    """Your custom logic here"""
-    data = request.get_json()
-    # Process data...
-    return self._create_response({
-        'status': 'success',
-        'custom_data': processed_data
-    })
-```
-
----
-
-## 📊 Monitoring and Logs
-
-### Log Files Location
-
-- **API Server**: `API/logs/api.log` and `API/requests.json`
-- **File Receiver**: `Receiver/upload_server.log`
-- **Shell**: `Shell/data/*.json`
-
-### Log Format
-
-```
-2025-10-10 12:34:56 - werkzeug - INFO - [main.py:123] - Request logged: /sisi POST - Status: 200 - IP: 127.0.0.1
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome from security researchers and ethical hackers! Please follow these guidelines:
-
-### Contribution Guidelines
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Code Style
-
-- Follow PEP 8 for Python code
-- Use meaningful variable names
-- Add docstrings to all functions
-- Include inline comments for complex logic
-- Document any new features thoroughly
-
-### Contribution Ideas
-
-- 🔒 **Evasion Techniques**: Add methods to evade detection
-- 🌐 **Protocol Support**: Add support for other protocols (DNS, ICMP, etc.)
-- 🔐 **Encryption**: Implement encryption for C2 communications
-- 📊 **Reporting**: Add automated report generation features
-- 🎭 **Obfuscation**: Add code obfuscation capabilities
-- 🔍 **Recon Modules**: Add reconnaissance functionality
-- 📱 **Mobile Support**: Add mobile platform support
-
-### Responsible Disclosure
-
-If you discover a security vulnerability in this toolkit itself, please:
-1. Do NOT create a public issue
-2. Email details to the maintainers privately
-3. Allow reasonable time for a fix before public disclosure
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🏢 About WEEEZA
-
-**WEEEZA** - Building professional-grade penetration testing tools for ethical hackers and security researchers worldwide.
-
-### Purpose
-
-This toolkit was developed to:
-- Assist security professionals in authorized testing
-- Educate aspiring penetration testers
-- Provide realistic attack simulation tools
-- Help organizations validate their security controls
-- Support red team operations and security research
-
-### Author
-
-Created by the WEEEZA security research team for the ethical hacking community.
-
-### Version History
-
-- **v2.0** - Professional Flask API with enhanced logging and C2 capabilities
-- **v1.0.0** - Advanced Upload Server with file integrity and payload delivery
-- **v1.0** - Initial Shell Interface release with remote command execution
-
----
-
-## 🎓 Ethical Hacking & Education
-
-### Learning Resources
-
-This toolkit can be used for educational purposes to learn about:
-
-- **Web Application Security**: Understanding HTTP protocols and API security
-- **Network Security**: Learning about C2 communications and detection
-- **Data Exfiltration**: Understanding how sensitive data can be stolen
-- **Post-Exploitation**: Learning about maintaining access and lateral movement
-- **Blue Team Defense**: Understanding attacker techniques to build better defenses
-
-### Practice Environments
-
-Recommended platforms for practicing with this toolkit:
-
-- **HackTheBox**: Virtual machines for penetration testing practice
-- **TryHackMe**: Interactive security training platform
-- **VulnHub**: Vulnerable VMs for security testing
-- **OWASP WebGoat**: Web application security training
-- **Your Own Lab**: Set up isolated virtual environments
-
-### Certifications This Toolkit Supports
-
-- **CEH**: Certified Ethical Hacker
-- **OSCP**: Offensive Security Certified Professional
-- **PNPT**: Practical Network Penetration Tester
-- **GPEN**: GIAC Penetration Tester
-- **eCPPT**: eLearnSecurity Certified Professional Penetration Tester
-
-### Legal and Ethical Framework
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    ETHICAL HACKING CODE                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  1. Always obtain written permission before testing        │
-│  2. Stay within defined scope and rules of engagement      │
-│  3. Respect privacy and confidentiality                    │
-│  4. Report all findings responsibly                        │
-│  5. Do not cause harm or disruption                        │
-│  6. Maintain detailed documentation                        │
-│  7. Follow applicable laws and regulations                 │
-│  8. Use knowledge only for defensive purposes              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📞 Support
-
-For issues, questions, or contributions:
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/weeeza-toolkit/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/weeeza-toolkit/discussions)
-- **Security**: Report vulnerabilities privately to maintainers
-
-### Community
-
-Join the ethical hacking community:
-- Share your success stories (authorized tests only!)
-- Contribute detection rules and IOCs
-- Help improve documentation
-- Share educational use cases
-
----
-
-## 🌟 Acknowledgments
-
-- **Flask Framework**: For the excellent web framework
-- **Python Community**: For the robust standard library and security tools
-- **OWASP**: For web security education and resources
-- **Offensive Security**: For promoting ethical hacking education
-- **Security Researchers**: For continuous improvement and feedback
-- **All Contributors**: Who help make this toolkit better
-
-### Special Thanks
-
-To all ethical hackers and security professionals who:
-- Use this toolkit responsibly
-- Report findings to improve security
-- Educate others about cybersecurity
-- Help organizations stay secure
-
----
-
-<div align="center">
-
-## ⚠️ FINAL REMINDER ⚠️
-
-### UNAUTHORIZED ACCESS IS ILLEGAL AND UNETHICAL
-
-**This toolkit is for authorized security testing only.**  
-**Always obtain written permission before use.**
-
----
-
-**Built with 🔒 by WEZA**
-
-*For Ethical Hackers, By Ethical Hackers*
-
----
-
-⭐ **Star this repository if you find it useful!**
-
-[![Star History](https://img.shields.io/github/stars/yourusername/weeeza-toolkit?style=social)](https://github.com/yourusername/weeeza-toolkit)
-
----
-
-[Report Bug](https://github.com/yourusername/weeeza-toolkit/issues) · [Request Feature](https://github.com/yourusername/weeeza-toolkit/issues) · [Security Advisory](https://github.com/yourusername/weeeza-toolkit/security)
-
-
-</div>
-
+<p align="center">
+  <b>NexaGrid</b><br>
+  <sub>Three services. One box. No cloud.</sub>
+</p>
